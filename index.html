@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Game</title>
+    <style>
+        .correct { background-color: green; color: white; }
+        .present { background-color: yellow; color: black; }
+        .absent { background-color: white; color: black; }
+        .guesses { margin-top: 20px; }
+    </style>
+</head>
+<body>
+<h1>Welcome to Dlewor™</h1>
+<p>Guess the 5-letter word!</p>
+
+<!-- File input for uploading the word list -->
+<input type="file" id="fileInput" />
+
+<div>
+    <input type="text" id="guessInput" maxlength="5" />
+    <button onclick="submitGuess()">Submit Guess</button>
+</div>
+
+<div class="guesses" id="guesses"></div>
+
+<script>
+    let targetWords = [];
+    let targetWord = '';
+    let attempts = 0;
+
+    // Function to handle file upload and process the word list
+    document.getElementById("fileInput").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (!file) {
+            alert("No file selected.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileContent = e.target.result;
+            const words = fileContent.split("\n").map(word => word.trim());
+            targetWords = words.filter(word => word.length === 5); // Filter for 5-letter words
+
+            if (targetWords.length === 0) {
+                alert("No valid 5-letter words found in the file.");
+            } else {
+                // Pick a random target word from the list
+                const randIndex = Math.floor(Math.random() * targetWords.length);
+                targetWord = targetWords[randIndex];
+                alert("File loaded successfully! Start guessing.");
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    // Function to handle guess submission
+    function submitGuess() {
+        const guessInput = document.getElementById("guessInput");
+        const guess = guessInput.value.toLowerCase();
+
+        // Check if the guess is valid (5 characters)
+        if (guess.length !== 5 || !targetWords.includes(guess)) {
+            alert("Please enter a valid 5-letter word.");
+            return;
+        }
+
+        attempts++;
+        let guessResult = "";
+
+        // Compare guess to target word and create the feedback
+        for (let i = 0; i < 5; i++) {
+            if (guess[i] === targetWord[i]) {
+                guessResult += `<span class="correct">${guess[i]}</span>`; // Correct
+            } else if (targetWord.includes(guess[i])) {
+                guessResult += `<span class="present">${guess[i]}</span>`; // Present
+            } else {
+                guessResult += `<span class="absent">${guess[i]}</span>`; // Absent
+            }
+        }
+
+        // Display the guess result
+        const guessesDiv = document.getElementById("guesses");
+        guessesDiv.innerHTML += `<div>Attempt ${attempts}: ${guessResult}</div>`;
+
+        // Clear input field
+        guessInput.value = "";
+
+        // Check if the word was guessed correctly
+        if (guess === targetWord) {
+            setTimeout(() => {
+                alert(`You guessed the word in ${attempts} attempts!`);
+            }, 100);
+        } else if (attempts === 6) {
+            setTimeout(() => {
+                alert(`Game over! The word was: ${targetWord}`);
+            }, 100);
+        }
+    }
+</script>
+</body>
+</html>
