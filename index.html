@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wordle Game</title>
     <style>
-        .correct { background-color: green; color: white; }
-        .present { background-color: yellow; color: black; }
-        .absent { background-color: white; color: black; }
-        .guesses { margin-top: 20px; }
+        .correct {
+            background-color: green;
+            color: white;
+        }
+        .present {
+            background-color: yellow;
+            color: black;
+        }
+        .absent {
+            background-color: white;
+            color: black;
+        }
+        .guesses {
+            margin-top: 20px;
+        }
     </style>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <h1>Welcome to Dlewor™</h1>
@@ -27,34 +39,36 @@
 
 <script>
     let targetWords = [];
-    let targetWord = '';
+    let targetWord = "";
     let attempts = 0;
 
     // Function to handle file upload and process the word list
-    document.getElementById("fileInput").addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (!file) {
-            alert("No file selected.");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const fileContent = e.target.result;
-            const words = fileContent.split("\n").map(word => word.trim());
-            targetWords = words.filter(word => word.length === 5); // Filter for 5-letter words
-
-            if (targetWords.length === 0) {
-                alert("No valid 5-letter words found in the file.");
-            } else {
-                // Pick a random target word from the list
-                const randIndex = Math.floor(Math.random() * targetWords.length);
-                targetWord = targetWords[randIndex];
-                alert("File loaded successfully! Start guessing.");
+    document
+        .getElementById("fileInput")
+        .addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                alert("No file selected.");
+                return;
             }
-        };
-        reader.readAsText(file);
-    });
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const fileContent = e.target.result;
+                const words = fileContent.split("\n").map((word) => word.trim());
+                targetWords = words.filter((word) => word.length === 5); // Filter for 5-letter words
+
+                if (targetWords.length === 0) {
+                    alert("No valid 5-letter words found in the file.");
+                } else {
+                    // Pick a random target word from the list
+                    const randIndex = Math.floor(Math.random() * targetWords.length);
+                    targetWord = targetWords[randIndex];
+                    alert("File loaded successfully! Start guessing.");
+                }
+            };
+            reader.readAsText(file);
+        });
 
     // Function to handle guess submission
     function submitGuess() {
